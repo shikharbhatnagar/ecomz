@@ -1,0 +1,58 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Welcome extends CI_Controller {
+
+	/**
+	 * Index Page for this controller.
+	 *
+	 * Maps to the following URL
+	 * 		http://example.com/index.php/welcome
+	 *	- or -
+	 * 		http://example.com/index.php/welcome/index
+	 *	- or -
+	 * Since this controller is set as the default controller in
+	 * config/routes.php, it's displayed at http://example.com/
+	 *
+	 * So any other public methods not prefixed with an underscore will
+	 * map to /index.php/welcome/<method_name>
+	 * @see https://codeigniter.com/user_guide/general/urls.html
+	 */
+	public function index()
+	{
+		$this->load->view('back/template/header');
+		//$this->load->view('welcome_message');
+		$data['page'] = 'back/welcome_message';
+		$this->load->view('back/template/page', $data);
+		$this->load->view('back/template/footer');
+	}
+	public function login()
+	{
+		$this->load->helper(array('form','url'));   
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('txtUserName', 'User Name', 'required');
+		$this->form_validation->set_rules('txtPassword', 'Password', 'required');
+		
+		if (!($this->input->post(NULL,TRUE)) )
+		{
+			$this->load->view('back/user/login');
+		}
+		elseif ($this->input->post(NULL,TRUE) AND $this->form_validation->run() === FALSE)
+        {
+			$form_ret['error'] = 'Y' ; 
+            $form_ret['message'] = validation_errors() ; 
+            die(json_encode($form_ret)); 
+		}                
+		else
+		{
+			$uzrname = $this->input->post(NULL,TRUE)['txtUserName'] ;
+			$uzrpwds = $this->input->post(NULL,TRUE)['txtPassword'] ;
+
+			$form_ret['error'] = 'N' ; 
+			$form_ret['message'] = "Successfully submitted. User name: $uzrname , passphrase: $uzrpwds" ;
+			die(json_encode($form_ret));
+		}
+		//$this->load->view('back/user/login');
+	}
+}
